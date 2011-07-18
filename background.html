@@ -1,0 +1,67 @@
+<html>
+<style>
+body {
+  min-width:500px;
+  overflow-x:hidden;
+}
+</style>
+<script type="text/javascript" src="jquery.js"></script>
+<script>
+
+//Return Message Function ptr
+var sendLyrics;
+var lyrics;
+var sourceURL;
+var status;
+var errorString;
+
+
+
+function loadLyrics(htmlResponse){ 
+  lyrics= $(htmlResponse).find('div[class="lyricbox"]').html();
+  console.log(lyrics);
+  sendLyrics({"status":"success" , "lyrics": lyrics , "sourceURL": sourceURL});
+  document.body.innerHTML=lyrics;
+}
+
+
+function getLyricsLink(xmlResponse) {  
+  //console.log()
+  //if(xmlResponse.getElementsByTagName('lyrics').textContent.toString().match("Not found")){
+  //   sendLyrics({"status":"Not Found"});
+  // }
+  
+  var url=xmlResponse.getElementsByTagName('url');
+  sourceURL = url[0].textContent;
+  console.log(sourceURL);
+  if(sourceURL.search(/edit/)>0){
+     sendLyrics({"status":"Not Found","lyrics":"Lyrics Not Available. </br> </br> you can add lyrics for this song at <a href=\""
+               +sourceURL+"\" target=\"_blank\">"+sourceURL+"</a>"   });
+  }
+  $.ajax({
+     url: sourceURL,
+     success:loadLyrics 
+  });
+
+}
+
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    //using lyrics.wikia.com REST api.
+    var lyricUrl="http://lyrics.wikia.com/api.php?artist="+encodeURIComponent(request.artist) +"&song=" + encodeURIComponent(request.song)+"&fmt=xml";
+    $.ajax({
+       url: "http://lyrics.wikia.com/api.php",
+       data :({artist: request.artist , song : request.song ,fmt : "xml"}),
+       success : getLyricsLink
+    });
+    
+    console.log("url: "+lyricUrl);
+    sendLyrics=sendResponse;
+  });
+  
+$(document).ajaxError(function(){
+   sendLyrics({"status":"failure", "lyrics":"Network Error"});
+});
+
+</script>
+</html>

@@ -1,0 +1,7 @@
+
+Chromium Extension to display lyrics for the current song in Google Music Beta from lyricwiki.org
+
+Version 1.0:
+* Initial release
+
+This extension uses REST api from lyrics.wikia.com and jquery

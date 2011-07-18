@@ -1,0 +1,29 @@
+#googlemusic_lyrics_nav {
+	width: 32px;
+	height: 32px; 
+	position: relative; 
+	z-index: 1000; 
+	top: 13px; 
+	cursor: pointer;
+	background-repeat: no-repeat;
+	display: inline;
+	float: right;
+	right: 12px;
+}
+
+#googlemusic_lyrics_nav:hover{
+	background-position: -32px 0px;
+}
+
+#googlemusic_lyrics_nav:active{
+	background-position: -64px 0px;
+}
+
+#gs_lyrics_content{
+	width: 80%;
+	color: #666;
+	margin-left: 30px;
+	margin-top: 10px; 
+	margin-bottom: 10px;
+	height: 100%;
+}

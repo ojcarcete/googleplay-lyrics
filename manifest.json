@@ -1,0 +1,20 @@
+{
+  "name": "Google Music Beta Lyrics",
+  "version": "1.0",
+  "description": "Displays Lyrics for Now Playing songs of Google Music Beta",
+  "background_page": "background.html",
+  "icons": { "128": "icon.png" },
+  "content_scripts": [
+    {
+      "matches": ["http://music.google.com/music/listen*"],
+      "css": ["contentscript-theme.css"],
+      "js": ["jquery.js","contentscript.js"]
+
+    }
+  ],
+  "permissions": [
+     "http://music.google.com/*", "http://lyrics.wikia.com/*"
+  ]
+}
+
+
