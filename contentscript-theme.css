@@ -3,20 +3,39 @@
 	height: 32px; 
 	position: relative; 
 	z-index: 1000; 
-	top: 13px; 
+	top: 5px; 
 	cursor: pointer;
 	background-repeat: no-repeat;
 	display: inline;
 	float: right;
-	right: 12px;
+	right: 12px;	
 }
 
-#googlemusic_lyrics_nav:hover{
-	background-position: -32px 0px;
+.googlemusic_lyrics_nav_off {
+	background-position: 0px 0px;
 }
 
-#googlemusic_lyrics_nav:active{
-	background-position: -64px 0px;
+.googlemusic_lyrics_nav_on {
+	background-position: -64px 0px;	
+}
+
+.lyrics_state {
+	font-weight: bold;
+	position: relative;
+	top: 34px;
+}
+
+#lyrics_on {
+	display: none;
+	left: 5px;
+}
+
+#lyrics_off {
+	left: 3px;
+}
+
+#lyrics_header {
+	display: none;
 }
 
 #gs_lyrics_content{

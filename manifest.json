@@ -1,7 +1,7 @@
 {
-  "name": "Google Music Beta Lyrics",
+  "name": "Lyria for Google Music Beta (TM)",
   "version": "1.0",
-  "description": "Displays Lyrics for Now Playing songs of Google Music Beta",
+  "description": "Displays lyrics for the current song of Google Music Beta (TM)",
   "background_page": "background.html",
   "icons": { "128": "icon.png" },
   "content_scripts": [

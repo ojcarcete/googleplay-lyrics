@@ -26,6 +26,8 @@
 var songName;
 var artistName;
 var albumName;
+var lyricsAreOn = 0;
+var timer;
 
 $(document).ready(function (){
    // Modify player layout to add button  
@@ -40,16 +42,42 @@ $(document).ready(function (){
 		   playerNode.id = "player-left";
 	   
 	       //add Image Button in player left
-	       $("#player-left").append("<div id=\"googlemusic_lyrics_nav\" style=\"background-image:url(" + bgImageURL + ");\"></div>");
-		   $("#googlemusic_lyrics_nav").click(getLyrics);
+	       $("#player-left").append("<div id=\"googlemusic_lyrics_nav\" class=\"googlemusic_lyrics_nav_off\" style=\"background-image:url(" + bgImageURL + 
+									");\"><span id=\"lyrics_on\" class=\"lyrics_state\">ON</span><span id=\"lyrics_off\" class=\"lyrics_state\">OFF</span></div>");
+		   $("#googlemusic_lyrics_nav").click(switchLyrics);
 		   
 		   break;
        }   
 	}
 });
 
-function getLyrics(){   
+function switchLyrics()
+{
+	if (lyricsAreOn)
+	{
+		// Turn off lyrics
+		lyricsAreOn = 0;
+		clearTimeout(timer);
+		$('#googlemusic_lyrics_nav').addClass('googlemusic_lyrics_nav_off');
+		$('#googlemusic_lyrics_nav').removeClass('googlemusic_lyrics_nav_on');
+		
+		document.getElementById("lyrics_on").style.display = "none"; 
+		document.getElementById("lyrics_off").style.display = "block"; 
+	}
+	else
+	{	
+		// Turn on lyrics
+		lyricsAreOn = 1;
+		getLyrics();
+		$('#googlemusic_lyrics_nav').addClass('googlemusic_lyrics_nav_on');
+		$('#googlemusic_lyrics_nav').removeClass('googlemusic_lyrics_nav_off');	
 
+		document.getElementById("lyrics_off").style.display = "none"; 
+		document.getElementById("lyrics_on").style.display = "block"; 
+	}
+}
+
+function getLyrics(){   
    songName   = $("#playerSongTitle .fade-out-content").text();
    artistName = $("#playerArtist .fade-out-content").text();
    albumName  = "";
@@ -72,12 +100,12 @@ function getLyrics(){
 	  }
 	  
 	  $(".gm-lyrics .rtMatcher").remove();     
-	  
-      //console.log(response.lyrics);
-      //console.log(response.youtubeElement);
    });
    
    }
+   
+   // Keep timer on
+   timer = setTimeout("getLyrics()", 1000);
 }
 
 
