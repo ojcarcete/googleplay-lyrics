@@ -4,4 +4,7 @@ Chromium Extension to display lyrics for the current song in Google Music Beta f
 Version 1.0:
 * Initial release
 
+Version 1.0.1:
+* Fixed bug that caused the lyrics of the current and previous songs to keep switching.
+
 This extension uses REST api from lyrics.wikia.com and jquery

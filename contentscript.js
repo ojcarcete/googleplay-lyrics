@@ -33,7 +33,7 @@ $(document).ready(function (){
    // Modify player layout to add button  
    var allHTMLTags = document.getElementsByTagName("*");
    var playerNode;
-   var bgImageURL = chrome.extension.getURL("images/googlemusic-lyrics.png");
+   var bgImageURL = chrome.extension.getURL("images/lyria-lyrics-button.png");
    
    for (var i = 0; i < allHTMLTags.length; i++) {   
        if (allHTMLTags[i].className == "player-left") {
@@ -77,30 +77,49 @@ function switchLyrics()
 	}
 }
 
-function getLyrics(){   
+function getLyrics(){  
+   var	currentLyrics = "";
+   var  thereIsError = 0;
+   
+   if (document.getElementById("gm-lyrics")) {
+	    currentLyrics = document.getElementById("gm-lyrics").innerHTML;
+		
+		if (currentLyrics.search(/network error/i) >= 0)
+		{		
+			thereIsError = 1;
+		}
+   } 
+   
+   if (songName == $("#playerSongTitle .fade-out-content").text() && !thereIsError) {
+	 	// Keep timer on, but don't request again
+		timer = setTimeout("getLyrics()", 1000);
+		
+		return;
+   }
+
    songName   = $("#playerSongTitle .fade-out-content").text();
    artistName = $("#playerArtist .fade-out-content").text();
    albumName  = "";
    
-   if(songName==null){
-      alert("Please Play a Song ");
+   if(songName == null){
+      //alert("Please Play a Song ");
       event.preventDefault();
    }
    else{
-   chrome.extension.sendRequest({song: songName,artist: artistName, album: albumName}, function(response) {  
-	  var lyricsElement;
-   
-      if (document.getElementById("gm-lyrics")) { 
-	     lyricsElement = document.getElementById("gm-lyrics"); 
-		 lyricsElement.innerHTML = response.lyrics;
-	  }
-	  else {
-		 $("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
-		 $("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "</div>");		
-	  }
-	  
-	  $(".gm-lyrics .rtMatcher").remove();     
-   });
+	  chrome.extension.sendRequest({song: songName,artist: artistName, album: albumName}, function(response) {  
+		  var lyricsElement; 
+			
+		  if (document.getElementById("gm-lyrics")) { 
+			 lyricsElement = document.getElementById("gm-lyrics"); 
+			 lyricsElement.innerHTML = response.lyrics;
+		  }
+		  else {
+			 $("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
+			 $("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "</div>");		
+		  }
+		  
+		  $(".gm-lyrics .rtMatcher").remove();     
+	   });
    
    }
    
