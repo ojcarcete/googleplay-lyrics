@@ -8,11 +8,12 @@
 	background-repeat: no-repeat;
 	display: inline;
 	float: right;
-	right: 12px;	
+	right: 0px;	
 }
 
 .googlemusic_lyrics_nav_off {
 	background-position: 0px 0px;
+    background-repeat: no-repeat;
 }
 
 .googlemusic_lyrics_nav_off:hover {
@@ -21,6 +22,7 @@
 
 .googlemusic_lyrics_nav_on {
 	background-position: -64px 0px;	
+    background-repeat: no-repeat;
 }
 
 .lyrics_state {

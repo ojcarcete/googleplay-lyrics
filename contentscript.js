@@ -38,7 +38,7 @@ $(document).ready(function (){
    for (var i = 0; i < allHTMLTags.length; i++) {   
        if (allHTMLTags[i].className == "player-left") {
            playerNode = allHTMLTags[i];
-	       playerNode.style.width = "490px";
+           playerNode.style.width = "505px";
 		   playerNode.id = "player-left";
 	   
 	       //add Image Button in player left
