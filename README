@@ -10,4 +10,7 @@ Version 1.0.1:
 Version 1.0.2:
 * Adapted to changes in the web page.
 
+Version 1.0.3:
+* Works in https site.
+
 This extension uses REST api from lyrics.wikia.com and jquery

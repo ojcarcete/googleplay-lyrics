@@ -45,7 +45,7 @@ $(document).ready(function (){
 	       $("#player-left").append("<div id=\"googlemusic_lyrics_nav\" class=\"googlemusic_lyrics_nav_off\" style=\"background-image:url(" + bgImageURL + 
 									");\"><span id=\"lyrics_on\" class=\"lyrics_state\">ON</span><span id=\"lyrics_off\" class=\"lyrics_state\">OFF</span></div>");
 		   $("#googlemusic_lyrics_nav").click(switchLyrics);
-		   
+           		   
 		   break;
        }   
 	}
