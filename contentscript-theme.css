@@ -1,54 +1,8 @@
-#googlemusic_lyrics_nav {
-	width: 32px;
-	height: 32px; 
-	position: relative; 
-	z-index: 1000; 
-	top: 5px; 
-	cursor: pointer;
-	background-repeat: no-repeat;
-	display: inline;
-	float: right;
-	right: 0px;	
-}
 
-.googlemusic_lyrics_nav_off {
-	background-position: 0px 0px;
-    background-repeat: no-repeat;
-}
-
-.googlemusic_lyrics_nav_off:hover {
-	background-position: -32px 0px;
-}
-
-.googlemusic_lyrics_nav_on {
-	background-position: -64px 0px;	
-    background-repeat: no-repeat;
-}
-
-.lyrics_state {
-	font-weight: bold;
-	position: relative;
-	top: 34px;
-}
-
-#lyrics_on {
-	display: none;
-	left: 5px;
-}
-
-#lyrics_off {
-	left: 3px;
-}
-
-#lyrics_header {
-	display: none;
-}
-
-#gs_lyrics_content{
-	width: 80%;
-	color: #666;
-	margin-left: 30px;
-	margin-top: 10px; 
-	margin-bottom: 10px;
-	height: 100%;
+/**
+ * Container for the lyrics
+ **/
+.gm-lyrics {
+	padding-left: 5px;
+	padding-top: 4px;	
 }

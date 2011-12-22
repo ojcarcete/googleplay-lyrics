@@ -1,16 +1,20 @@
 
-Chromium Extension to display lyrics for the current song in Google Music Beta from lyricwiki.org
+Chromium Extension to display lyrics for the current song in Google Music from lyricwiki.org
 
-Version 1.0.0:
-* Initial release
+Version 1.0.4:
+* Lyria button removed.
+* Small aesthetic changes.
 
-Version 1.0.1:
-* Fixed bug that caused the lyrics of the current and previous songs to keep switching.
+Version 1.0.3:
+* Works in https site.
 
 Version 1.0.2:
 * Adapted to changes in the web page.
 
-Version 1.0.3:
-* Works in https site.
+Version 1.0.1:
+* Fixed bug that caused the lyrics of the current and previous songs to keep switching.
+
+Version 1.0.0:
+* Initial release
 
 This extension uses REST api from lyrics.wikia.com and jquery
