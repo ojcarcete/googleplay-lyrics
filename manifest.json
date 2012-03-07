@@ -1,19 +1,18 @@
 {
-  "name": "Lyria for Google Music (TM)",
-  "version": "1.0.4",
-  "description": "Displays lyrics for the current song of Google Music (TM)",
+  "name": "Lyria for Google Play (TM)",
+  "version": "1.0.5",
+  "description": "Displays lyrics for the current song of Google Play (TM)",
   "background_page": "background.html",
   "icons": { "128": "icon.png" },
   "content_scripts": [
     {
-      "matches": ["*://music.google.com/music/listen*"],
+      "matches": ["*://play.google.com/music/listen*"],
       "css": ["contentscript-theme.css"],
       "js": ["jquery.js","contentscript.js"]
-
     }
   ],
   "permissions": [
-     "http://music.google.com/*", "http://lyrics.wikia.com/*"
+     "*://play.google.com/music/listen*", "http://lyrics.wikia.com/*"
   ]
 }
 
