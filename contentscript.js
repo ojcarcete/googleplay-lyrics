@@ -28,13 +28,6 @@ var artistName;
 var albumName;
 var timer;
 
-/**
-// Initialization point
-$(document).ready(function (){
-   
-});
-**/
-
 // Add lyrics content area and start checking for sonf names
 $("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
 $("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">No song being played<br /><br /><br /></div>");
@@ -53,6 +46,7 @@ function getLyrics(){
 		}
    } 
    
+   // Lyrics already retrieved
    if (songName == $("#playerSongTitle .fade-out-content").text() && !thereIsError) {
 
 	 	// Keep timer on, but don't request again
@@ -65,26 +59,30 @@ function getLyrics(){
    artistName = $("#playerArtist .fade-out-content").text();
    albumName  = "";
    
-   if(songName == null) {
-      event.preventDefault();
-   }
-   else {
-	  chrome.extension.sendRequest({song: songName,artist: artistName, album: albumName}, function(response) {  
-		  var lyricsElement; 
+   // Send new request to get the lyrics
+   if(songName != null && songName != "") {
+
+		chrome.extension.sendRequest({song: songName, artist: artistName, album: albumName}, function(response) {  
+		  	var lyricsElement; 
 			
-		  if (document.getElementById("gm-lyrics")) { 
-			 lyricsElement = document.getElementById("gm-lyrics"); 
-			 lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
-		  }
-		  else {
-			 $("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
-			 $("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");		
-		  }
-		  
-		  $(".gm-lyrics .rtMatcher").remove();     
-	   });
+			if (document.getElementById("gm-lyrics")) { 
+				lyricsElement = document.getElementById("gm-lyrics"); 
+				lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
+			}
+			else {
+				$("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
+				$("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");		
+			}
+
+			$(".gm-lyrics .rtMatcher").remove();     
+	   	});
+
+		// Keep timer on
+   		timer = setTimeout("getLyrics()", 10000);
+
+   		return; // More time to wait for response
    }
    
-   // Keep timer on
+   // Keep timer on, no request sent
    timer = setTimeout("getLyrics()", 1000);
 }

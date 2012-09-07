@@ -1,6 +1,6 @@
 {
   "name": "Lyria for Google Play (TM)",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Displays lyrics for the current song of Google Play (TM)",
   "background_page": "background.html",
   "icons": { "128": "icon.png" },
@@ -15,5 +15,3 @@
      "*://play.google.com/music/listen*", "http://lyrics.wikia.com/*"
   ]
 }
-
-
