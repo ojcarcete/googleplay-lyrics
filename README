@@ -1,6 +1,9 @@
 
 Chromium Extension to display lyrics for the current song in Google Music from lyricwiki.org
 
+Version 1.0.7:
+* Adapted to changes in Google Play (TM).
+
 Version 1.0.6:
 * Support for more foreign languages added.
 

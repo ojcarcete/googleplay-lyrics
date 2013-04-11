@@ -1,8 +1,10 @@
 {
   "name": "Lyria for Google Play (TM)",
-  "version": "1.0.6",
-  "description": "Displays lyrics for the current song of Google Play (TM)",
-  "background_page": "background.html",
+  "version": "1.0.7",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["jquery.js", "background.js"]
+  },
   "icons": { "128": "icon.png" },
   "content_scripts": [
     {
@@ -11,6 +13,7 @@
       "js": ["jquery.js","contentscript.js"]
     }
   ],
+  "description": "Displays lyrics for the current song in Google Play (TM)",
   "permissions": [
      "*://play.google.com/music/listen*", "http://lyrics.wikia.com/*"
   ]

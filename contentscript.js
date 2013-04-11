@@ -1,8 +1,8 @@
 /*****************************************************************************
-*	Chromium Extension to Display Lyrics for Current Song in Google Music 
+*	Chromium Extension to Display Lyrics for Current Song in Google Play (TM) 
 *	from lyricwiki.org
 *
-*   Copyright (C) 2011  Oscar Figuerola
+*   Copyright (C) 2013  Oscar Figuerola
 *
 *	Authors: Oscar Figuerola Salas <oscar.figuerola.salas@gmail.com>
 *			 sethu
@@ -25,44 +25,41 @@
 
 var songName;
 var artistName;
-var albumName;
-var timer;
 
-// Add lyrics content area and start checking for sonf names
+setInterval(getLyrics, 1500);
+
+// Add lyrics content area and start checking for song names
 $("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
 $("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">No song being played<br /><br /><br /></div>");
-getLyrics();
 
-function getLyrics(){  
+function getLyrics() {  
    var	currentLyrics = "";
    var  thereIsError = 0;
    
-   if (document.getElementById("gm-lyrics")) {
+   if(document.getElementById("gm-lyrics")) {
 	    currentLyrics = document.getElementById("gm-lyrics").innerHTML;
 		
-		if (currentLyrics.search(/network error/i) >= 0)
+		if(currentLyrics.search(/network error/i) >= 0)
 		{		
 			thereIsError = 1;
 		}
    } 
    
    // Lyrics already retrieved
-   if (songName == $("#playerSongTitle .fade-out-content").text() && !thereIsError) {
-
-	 	// Keep timer on, but don't request again
-		timer = setTimeout("getLyrics()", 1000);
-		
+   if(songName == $("#playerSongTitle .fade-out-content").text() && !thereIsError) {
 		return;
    }
-
-   songName   = $("#playerSongTitle .fade-out-content").text();
-   artistName = $("#playerArtist .fade-out-content").text();
-   albumName  = "";
    
-   // Send new request to get the lyrics
+   // Send new request to get the lyrics url
+   songName   = $("#playerSongTitle .fade-out-content").text();
+   artistName = $("#player-artist .fade-out-content").text();
+
    if(songName != null && songName != "") {
 
-		chrome.extension.sendRequest({song: songName, artist: artistName, album: albumName}, function(response) {  
+		chrome.extension.sendRequest({song: songName, artist: artistName}, function(response) {  
+		  	
+		  	// Insert lyrics in page
+		  	console.log("Lyrics received");
 		  	var lyricsElement; 
 			
 			if (document.getElementById("gm-lyrics")) { 
@@ -74,15 +71,9 @@ function getLyrics(){
 				$("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");		
 			}
 
-			$(".gm-lyrics .rtMatcher").remove();     
+			$(".gm-lyrics .rtMatcher").remove();    
 	   	});
 
-		// Keep timer on
-   		timer = setTimeout("getLyrics()", 10000);
-
-   		return; // More time to wait for response
+   		return;
    }
-   
-   // Keep timer on, no request sent
-   timer = setTimeout("getLyrics()", 1000);
 }
