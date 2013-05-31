@@ -29,8 +29,8 @@ var artistName;
 setInterval(getLyrics, 1500);
 
 // Add lyrics content area and start checking for song names
-$("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
-$("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">No song being played<br /><br /><br /></div>");
+$("#playlists").after("<div id=\"lyrics\" class=\"nav-section-header\">LYRICS</div>");
+$("#lyrics").after("<div class=\"gm-lyrics\" id=\"gm-lyrics\">No song being played<br /><br /><br /></div>");
 
 function getLyrics() {  
    var	currentLyrics = "";
@@ -52,7 +52,7 @@ function getLyrics() {
    
    // Send new request to get the lyrics url
    songName   = $("#playerSongTitle .fade-out-content").text();
-   artistName = $("#player-artist .fade-out-content").text();
+   artistName = $("#player-artist").text();
 
    if(songName != null && songName != "") {
 
@@ -67,8 +67,8 @@ function getLyrics() {
 				lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
 			}
 			else {
-				$("#nav").append("<div class=\"nav-section-header\">LYRICS</div>");
-				$("#nav").append("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");		
+				$("#playlists").after("<div class=\"nav-section-header\">LYRICS</div>");
+				$("#playlists").after("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");		
 			}
 
 			$(".gm-lyrics .rtMatcher").remove();    
