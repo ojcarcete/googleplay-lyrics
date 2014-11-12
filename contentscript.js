@@ -67,8 +67,8 @@ function getLyrics() {
 				lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
 			}
 			else {
+				$("#playlists").after("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");
 				$("#playlists").after("<div class=\"nav-section-header\">LYRICS</div>");
-				$("#playlists").after("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");		
 			}
 
 			$(".gm-lyrics .rtMatcher").remove();    
