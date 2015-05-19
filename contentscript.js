@@ -46,12 +46,12 @@ function getLyrics() {
    } 
    
    // Lyrics already retrieved
-   if(songName == $("#playerSongTitle").text() && !thereIsError) {
+   if(songName == $("#player-song-title").text() && !thereIsError) {
 		return;
    }
    
    // Send new request to get the lyrics url
-   songName   = $("#playerSongTitle").text();
+   songName   = $("#player-song-title").text();
    artistName = $("#player-artist").text();
 
    if(songName != null && songName != "") {
