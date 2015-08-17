@@ -1,5 +1,7 @@
-
-Chromium Extension to display lyrics for the current song in Google Music from lyricwiki.org
+Version 1.0.12:
+* Adapted to changes in LyricWikia's API.
+* Open left navigation menu automatically when the first lyrics are fetched.
+* Aesthetic changes.
 
 Version 1.0.11:
 * Adapted to changes in Google Play (TM) (thanks to ChiefORZ).
@@ -39,5 +41,3 @@ Version 1.0.1:
 
 Version 1.0.0:
 * Initial release
-
-This extension uses REST api from lyrics.wikia.com and jquery

@@ -1,5 +1,5 @@
 /*****************************************************************************
-*	Chromium Extension to Display Lyrics for Current Song in Google Play (TM) 
+*	Chromium Extension to Display Lyrics for Current Song in Google Play (TM)
 *	from lyricwiki.org
 *
 *   Copyright (C) 2013  Oscar Figuerola
@@ -23,57 +23,85 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 
-var songName;
-var artistName;
+// Google Play html
+var SECTION_HEADER_CLASS = "nav-section-header";
+var SECTION_DIVIDER_CLASS = "nav-section-divider";
+var PLAYLISTS_CONTAINER_ID = "playlists";
+var LEFT_PANEL_ID = "left-nav-open-button";
+var SONG_TITLE_CONTAINER_ID = "player-song-title";
+var ARTIST_CONTAINER_ID = "player-artist";
+
+// Custom html
+var LYRICS_HEADER_ID = "lyrics";
+var LYRICS_CONTAINER_ID = "gm-lyrics";
+var LYRICS_CONTAINER_CLASS = "gm-lyrics";
+
+var songName = null;
+var artistName = null;
+var firstLyricsLoaded = false;
 
 setInterval(getLyrics, 1500);
 
-// Add lyrics content area and start checking for song names
-$("#playlists").after("<div id=\"lyrics\" class=\"nav-section-header\">LYRICS</div>");
-$("#lyrics").after("<div class=\"gm-lyrics\" id=\"gm-lyrics\">No song being played<br /><br /><br /></div>");
+addLyricsContainer();
 
-function getLyrics() {  
+function getLyrics() {
+
    var	currentLyrics = "";
    var  thereIsError = 0;
-   
-   if(document.getElementById("gm-lyrics")) {
-	    currentLyrics = document.getElementById("gm-lyrics").innerHTML;
-		
-		if(currentLyrics.search(/network error/i) >= 0)
-		{		
+
+   if(document.getElementById(LYRICS_CONTAINER_CLASS)) {
+
+	    currentLyrics = document.getElementById(LYRICS_CONTAINER_CLASS).innerHTML;
+
+		if(currentLyrics.search(/network error/i) >= 0) {
+
 			thereIsError = 1;
 		}
-   } 
-   
+   }
+
    // Lyrics already retrieved
-   if(songName == $("#player-song-title").text() && !thereIsError) {
+   if(songName == $("#" + SONG_TITLE_CONTAINER_ID).text() && !thereIsError) {
+
 		return;
    }
-   
+
    // Send new request to get the lyrics url
-   songName   = $("#player-song-title").text();
-   artistName = $("#player-artist").text();
+   songName   = $("#" + SONG_TITLE_CONTAINER_ID).text();
+   artistName = $("#" + ARTIST_CONTAINER_ID).text();
 
    if(songName != null && songName != "") {
 
-		chrome.extension.sendRequest({song: songName, artist: artistName}, function(response) {  
-		  	
+		chrome.extension.sendRequest({song: songName, artist: artistName}, function(response) {
+
+            console.log("Lyrics received");
+
 		  	// Insert lyrics in page
-		  	console.log("Lyrics received");
-		  	var lyricsElement; 
-			
-			if (document.getElementById("gm-lyrics")) { 
-				lyricsElement = document.getElementById("gm-lyrics"); 
-				lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
-			}
-			else {
-				$("#playlists").after("<div class=\"gm-lyrics\" id=\"gm-lyrics\">" + response.lyrics + "<br /><br /><br /></div>");
-				$("#playlists").after("<div class=\"nav-section-header\">LYRICS</div>");
+			if(!document.getElementById(LYRICS_CONTAINER_ID)) {
+
+                // Make sure lyrics container exists
+                addLyricsContainer();
 			}
 
-			$(".gm-lyrics .rtMatcher").remove();    
+            var lyricsElement = document.getElementById(LYRICS_CONTAINER_ID);
+            lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
+
+			$("." + LYRICS_CONTAINER_ID + " .rtMatcher").remove();
+
+            // Open left navigation panel when the first lyrics are loaded
+            if(!firstLyricsLoaded) {
+
+                firstLyricsLoaded = true;
+                $("#" + LEFT_PANEL_ID).click();
+            }
 	   	});
 
    		return;
    }
+}
+
+function addLyricsContainer() {
+
+    // Add lyrics content area and start checking for song names
+    $("#" + PLAYLISTS_CONTAINER_ID).after("<div class=\"" + SECTION_DIVIDER_CLASS + "\"></div><div id=\"" + LYRICS_HEADER_ID + "\" class=\"" + SECTION_HEADER_CLASS + "\">Lyrics</div>");
+    $("#" + LYRICS_HEADER_ID).after("<div class=\"" + LYRICS_CONTAINER_CLASS + "\" id=\"" + LYRICS_CONTAINER_ID + "\">No song being played<br /><br /><br /></div>");
 }
