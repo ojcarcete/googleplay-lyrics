@@ -1,3 +1,6 @@
+Version 1.0.13:
+* Adapted to changes in Google Play (TM).
+
 Version 1.0.12:
 * Adapted to changes in LyricWikia's API.
 * Open left navigation menu automatically when the first lyrics are fetched.

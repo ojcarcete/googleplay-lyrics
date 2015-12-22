@@ -28,7 +28,7 @@ var SECTION_HEADER_CLASS = "nav-section-header";
 var SECTION_DIVIDER_CLASS = "nav-section-divider";
 var PLAYLISTS_CONTAINER_ID = "playlists";
 var LEFT_PANEL_ID = "left-nav-open-button";
-var SONG_TITLE_CONTAINER_ID = "player-song-title";
+var SONG_TITLE_CONTAINER_ID = "currently-playing-title";
 var ARTIST_CONTAINER_ID = "player-artist";
 
 // Custom html
