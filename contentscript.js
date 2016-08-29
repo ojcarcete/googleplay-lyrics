@@ -24,21 +24,22 @@
 *****************************************************************************/
 
 // Google Play html
-var SECTION_HEADER_CLASS = "nav-section-header";
+var SECTION_HEADER_ID = "playlists-header";
 var SECTION_DIVIDER_CLASS = "nav-section-divider";
-var PLAYLISTS_CONTAINER_ID = "playlists";
-var LEFT_PANEL_ID = "left-nav-open-button";
+var PLAYLISTS_CONTAINER_ID = "playlists-container";
+var PLAYLISTS_PANEL_ID = "playlist-drawer-button";
 var SONG_TITLE_CONTAINER_ID = "currently-playing-title";
 var ARTIST_CONTAINER_ID = "player-artist";
 
 // Custom html
-var LYRICS_HEADER_ID = "lyrics";
+var LYRICS_HEADER_CLASS = "lyrics";
 var LYRICS_CONTAINER_ID = "gm-lyrics";
 var LYRICS_CONTAINER_CLASS = "gm-lyrics";
 
 var songName = null;
 var artistName = null;
 var firstLyricsLoaded = false;
+var lyricsContainerOffset = 0;
 
 setInterval(getLyrics, 1500);
 
@@ -60,7 +61,7 @@ function getLyrics() {
    }
 
    // Lyrics already retrieved
-   if(songName == $("#" + SONG_TITLE_CONTAINER_ID).text() && !thereIsError) {
+   if(lyricsAlreadyRetrieved()) {
 
 		return;
    }
@@ -73,25 +74,34 @@ function getLyrics() {
 
 		chrome.extension.sendRequest({song: songName, artist: artistName}, function(response) {
 
-            console.log("Lyrics received");
+      console.log("Lyrics received");
 
-		  	// Insert lyrics in page
+		  // Insert lyrics in page
 			if(!document.getElementById(LYRICS_CONTAINER_ID)) {
 
-                // Make sure lyrics container exists
-                addLyricsContainer();
+        // Make sure lyrics container exists
+        addLyricsContainer();
 			}
 
-            var lyricsElement = document.getElementById(LYRICS_CONTAINER_ID);
-            lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
+      var lyricsElement = document.getElementById(LYRICS_CONTAINER_ID);
+      lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
 
 			$("." + LYRICS_CONTAINER_ID + " .rtMatcher").remove();
 
-            // Open left navigation panel when the first lyrics are loaded
+            // Open playlists panel when the first lyrics are loaded
             if(!firstLyricsLoaded) {
 
-                firstLyricsLoaded = true;
-                $("#" + LEFT_PANEL_ID).click();
+                // firstLyricsLoaded = true; // TODO: find a better way to keep lyrics visible
+
+                $("#" + PLAYLISTS_PANEL_ID).click();
+
+                if(lyricsContainerOffset <= 0) {
+                  lyricsContainerOffset = $(".lyrics").first().position().top;
+                }
+
+                $("#playlist-drawer #mainContainer").animate({
+                    scrollTop: lyricsContainerOffset
+                }, 1500);
             }
 	   	});
 
@@ -102,6 +112,11 @@ function getLyrics() {
 function addLyricsContainer() {
 
     // Add lyrics content area and start checking for song names
-    $("#" + PLAYLISTS_CONTAINER_ID).after("<div class=\"" + SECTION_DIVIDER_CLASS + "\"></div><div id=\"" + LYRICS_HEADER_ID + "\" class=\"" + SECTION_HEADER_CLASS + "\">Lyrics</div>");
-    $("#" + LYRICS_HEADER_ID).after("<div class=\"" + LYRICS_CONTAINER_CLASS + "\" id=\"" + LYRICS_CONTAINER_ID + "\">No song being played<br /><br /><br /></div>");
+    $("#" + PLAYLISTS_CONTAINER_ID).after("<div class=\"" + SECTION_DIVIDER_CLASS + "\"></div><div id=\"" + SECTION_HEADER_ID + "\" class=\"" + LYRICS_HEADER_CLASS + "\">Lyrics</div>");
+    $("." + LYRICS_HEADER_CLASS).after("<div class=\"" + LYRICS_CONTAINER_CLASS + "\" id=\"" + LYRICS_CONTAINER_ID + "\">No song being played<br /><br /><br /></div>");
+}
+
+function lyricsAlreadyRetrieved() {
+
+  return (songName == $("#" + SONG_TITLE_CONTAINER_ID).text() && !thereIsError);
 }
