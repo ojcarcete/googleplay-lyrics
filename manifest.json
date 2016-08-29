@@ -1,6 +1,6 @@
 {
   "name": "Lyria for Google Play (TM)",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "manifest_version": 2,
   "background": {
     "scripts": ["jquery.js", "background.js"]
