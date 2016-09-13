@@ -3,14 +3,14 @@
   "version": "1.0.14",
   "manifest_version": 2,
   "background": {
-    "scripts": ["jquery.js", "background.js"]
+    "scripts": ["libs/js/jquery.min.js", "background.js"]
   },
   "icons": { "128": "icon.png" },
   "content_scripts": [
     {
       "matches": ["*://play.google.com/music/listen*"],
       "css": ["contentscript-theme.css"],
-      "js": ["jquery.js","contentscript.js"]
+      "js": ["libs/js/jquery.min.js", "contentscript.js"]
     }
   ],
   "description": "Displays lyrics for the current song in Google Play (TM)",

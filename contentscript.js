@@ -1,122 +1,144 @@
 /*****************************************************************************
-*	Chromium Extension to Display Lyrics for Current Song in Google Play (TM)
-*	from lyricwiki.org
-*
-*   Copyright (C) 2013  Oscar Figuerola
-*
-*	Authors: Oscar Figuerola Salas <oscar.figuerola.salas@gmail.com>
-*			 sethu
-*
-*   Previous project: https://github.com/sethubhatti/grooveshark-lyrics
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************************************************/
+ * Chromium Extension to Display Lyrics for Current Song in Google Play (TM)
+ * from lyricwiki.org
+ *
+ *   Copyright (C) 2013  Oscar Figuerola
+ *
+ * Authors: Oscar Figuerola Salas <oscar.figuerola.salas@gmail.com>
+ *          sethu
+ *
+ *   Previous project: https://github.com/sethubhatti/grooveshark-lyrics
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *****************************************************************************/
 
 // Google Play html
 var SECTION_HEADER_ID = "playlists-header";
-var SECTION_DIVIDER_CLASS = "nav-section-divider";
-var PLAYLISTS_CONTAINER_ID = "playlists-container";
-var PLAYLISTS_PANEL_ID = "playlist-drawer-button";
+var PLAYLISTS_DRAWER_BUTTON_ID = "playlist-drawer-button";
 var SONG_TITLE_CONTAINER_ID = "currently-playing-title";
 var ARTIST_CONTAINER_ID = "player-artist";
 
 // Custom html
-var LYRICS_HEADER_CLASS = "lyrics";
-var LYRICS_CONTAINER_ID = "gm-lyrics";
-var LYRICS_CONTAINER_CLASS = "gm-lyrics";
+var LYRICS_BUTTON_ID = "lyrics-button";
+var LYRICS_BUTTON_ICON = "av:library-books";
+
+var LYRICS_DIALOG_CONTAINER_ID = "mainContainer";
+var LYRICS_DIALOG_ID = "scrolling";
+var LYRICS_HEADER_CLASS = "lyrics-header";
+var LYRICS_CONTAINER_ID = "lyrics";
 
 var songName = null;
 var artistName = null;
 var firstLyricsLoaded = false;
 var lyricsContainerOffset = 0;
 
-setInterval(getLyrics, 1500);
+$(document).ready(function() {
 
-addLyricsContainer();
+  configureLyricsHtmlIfNeeded();
+  startFetchingLyrics();
+});
+
+function startFetchingLyrics() {
+
+  setInterval(getLyrics, 1500);
+}
 
 function getLyrics() {
 
-   var	currentLyrics = "";
-   var  thereIsError = 0;
+  var thereIsError = false;
+  var lyricsContainer = $("#" + LYRICS_CONTAINER_ID);
 
-   if(document.getElementById(LYRICS_CONTAINER_CLASS)) {
+  if (lyricsContainer) {
 
-	    currentLyrics = document.getElementById(LYRICS_CONTAINER_CLASS).innerHTML;
+    var currentLyrics = lyricsContainer.html();
 
-		if(currentLyrics.search(/network error/i) >= 0) {
+    if (currentLyrics.search(/network error/i) >= 0) {
 
-			thereIsError = 1;
-		}
-   }
+      thereIsError = true;
+    }
+  }
 
-   // Lyrics already retrieved
-   if(lyricsAlreadyRetrieved()) {
+  // Lyrics already retrieved
+  if (lyricsAlreadyRetrievedForCurrentSong() && !thereIsError) {
 
-		return;
-   }
+    return;
+  }
 
-   // Send new request to get the lyrics url
-   songName   = $("#" + SONG_TITLE_CONTAINER_ID).text();
-   artistName = $("#" + ARTIST_CONTAINER_ID).text();
+  // Send new request to get the lyrics url
+  songName = $("#" + SONG_TITLE_CONTAINER_ID).text();
+  artistName = $("#" + ARTIST_CONTAINER_ID).text();
 
-   if(songName != null && songName != "") {
+  if (songName != null && songName != "") {
 
-		chrome.extension.sendRequest({song: songName, artist: artistName}, function(response) {
+    chrome.extension.sendRequest({
+      song: songName,
+      artist: artistName
+    }, function(response) {
 
       console.log("Lyrics received");
 
-		  // Insert lyrics in page
-			if(!document.getElementById(LYRICS_CONTAINER_ID)) {
+      // Insert lyrics in page      
+      var lyricsHtml = response.lyrics;
 
-        // Make sure lyrics container exists
-        addLyricsContainer();
-			}
+      lyricsContainer.html(lyricsHtml);
+      lyricsContainer.children(".rtMatcher").remove();
 
-      var lyricsElement = document.getElementById(LYRICS_CONTAINER_ID);
-      lyricsElement.innerHTML = response.lyrics + "<br /><br /><br /><br />";
+      repositionLyricsDialog();
 
-			$("." + LYRICS_CONTAINER_ID + " .rtMatcher").remove();
+      if (!firstLyricsLoaded) {
 
-            // Open playlists panel when the first lyrics are loaded
-            if(!firstLyricsLoaded) {
+        firstLyricsLoaded = true;
 
-                // firstLyricsLoaded = true; // TODO: find a better way to keep lyrics visible
+        $("#" + LYRICS_BUTTON_ID).click();
+      }
+    });
 
-                $("#" + PLAYLISTS_PANEL_ID).click();
+    return;
+  }
+}
 
-                if(lyricsContainerOffset <= 0) {
-                  lyricsContainerOffset = $(".lyrics").first().position().top;
-                }
+function configureLyricsHtmlIfNeeded() {
 
-                $("#playlist-drawer #mainContainer").animate({
-                    scrollTop: lyricsContainerOffset
-                }, 1500);
-            }
-	   	});
+  if (document.getElementById(LYRICS_DIALOG_ID)) {
 
-   		return;
-   }
+    return;
+  }
+
+  addLyricsButton();
+  addLyricsContainer();
+}
+
+function addLyricsButton() {
+
+  $("#" + PLAYLISTS_DRAWER_BUTTON_ID).before("<paper-icon-button id=\"" + LYRICS_BUTTON_ID + "\" icon=\"" + LYRICS_BUTTON_ICON + "\" onclick=\"" + LYRICS_DIALOG_ID + ".toggle()\"></paper-icon-button>");
 }
 
 function addLyricsContainer() {
 
-    // Add lyrics content area and start checking for song names
-    $("#" + PLAYLISTS_CONTAINER_ID).after("<div class=\"" + SECTION_DIVIDER_CLASS + "\"></div><div id=\"" + SECTION_HEADER_ID + "\" class=\"" + LYRICS_HEADER_CLASS + "\">Lyrics</div>");
-    $("." + LYRICS_HEADER_CLASS).after("<div class=\"" + LYRICS_CONTAINER_CLASS + "\" id=\"" + LYRICS_CONTAINER_ID + "\">No song being played<br /><br /><br /></div>");
+  var LYRICS_HEADER_HTML = "<h2 id=\"" + SECTION_HEADER_ID + "\" class=\"" + LYRICS_HEADER_CLASS + "\">Lyrics</h2>";
+  var LYRICS_CONTAINER_HTML = "<div id=\"" + LYRICS_CONTAINER_ID + "\"><p>No lyrics to show yet</p></div>";
+
+  $("#" + LYRICS_DIALOG_CONTAINER_ID).append("<paper-dialog onclick=\"scrolling.refit()\" id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>");
 }
 
-function lyricsAlreadyRetrieved() {
+function repositionLyricsDialog() {
 
-  return (songName == $("#" + SONG_TITLE_CONTAINER_ID).text() && !thereIsError);
+  $("#" + LYRICS_DIALOG_ID).click();
 }
+
+function lyricsAlreadyRetrievedForCurrentSong() {
+
+  return (songName == $("#" + SONG_TITLE_CONTAINER_ID).text());
+}
+
