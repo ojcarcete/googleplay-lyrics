@@ -1,20 +1,26 @@
 {
-  "name": "Lyria for Google Play (TM)",
-  "version": "1.0.14",
+  "name": "Lyria for Google Play (TM) Music",
+  "version": "1.1.0",
   "manifest_version": 2,
   "background": {
-    "scripts": ["libs/js/jquery.min.js", "background.js"]
+    "scripts": [
+      "libs/js/jquery.min.js", 
+      "background.js"
+    ]
   },
-  "icons": { "128": "icon.png" },
-  "content_scripts": [
-    {
+  "icons": { 
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png" 
+  },
+  "content_scripts": [{
       "matches": ["*://play.google.com/music/listen*"],
       "css": ["contentscript-theme.css"],
       "js": ["libs/js/jquery.min.js", "contentscript.js"]
-    }
-  ],
-  "description": "Displays lyrics for the current song in Google Play (TM)",
+  }],
+  "description": "Displays lyrics for the current song in Google Play (TM) Music",
   "permissions": [
-     "*://play.google.com/music/listen*", "http://lyrics.wikia.com/*"
+     "*://play.google.com/music/listen*", 
+     "http://lyrics.wikia.com/*"
   ]
 }
