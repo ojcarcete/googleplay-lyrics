@@ -1,15 +1,17 @@
 
-/**
- * Container for the lyrics
- **/
-.gm-lyrics {
-	padding-left: 20px;
-	padding-right: 10px;
-	padding-top: 4px;
-	-webkit-touch-callout: all;
-	-webkit-user-select: all;
-	-khtml-user-select: all;
-	-moz-user-select: all;
-	-ms-user-select: all;
-	user-select: all;
+#scrolling {
+    left: initial !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 300px !important;
+    max-width: 300px !important;
+}
+
+#scrolling paper-dialog-scrollable {
+    margin-top: 0;
+}
+
+.lyrics-header {
+    margin-left: 0 !important;
 }
