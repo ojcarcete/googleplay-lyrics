@@ -95,7 +95,7 @@ function getLyrics() {
       function(response) {
 
         // Process lyrics
-        lastFetchedLyrics = response.lyrics;
+        lastFetchedLyrics = response.lyrics + "<br/><br/><br/>";
 
         lyricsContainer.html(lastFetchedLyrics);
         lyricsContainer.children(".rtMatcher").remove();
