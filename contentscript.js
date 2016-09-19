@@ -147,6 +147,15 @@ function addLyricsContainerIfNeeded() {
   var LYRICS_DIALOG_HTML = "<paper-dialog onclick=\""+ LYRICS_DIALOG_ID + ".refit()\" id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
 
   $("#" + LYRICS_DIALOG_CONTAINER_ID).append(LYRICS_DIALOG_HTML);
+
+  configureTextColor();
+}
+
+function configureTextColor() {
+
+  var bestTextColor = getBestTextColor();
+  $("#" + LYRICS_DIALOG_CONTAINER_ID + " p").css("color", bestTextColor);
+  $("#" + LYRICS_DIALOG_CONTAINER_ID + " div").css("color", bestTextColor);
 }
 
 function recoverFromMissingLyricsDialog() {
@@ -238,5 +247,83 @@ function isOpeningSongsQueueDialog() {
 function lyricsAlreadyRetrievedForCurrentSong() {
 
   return (songName == $("#" + SONG_TITLE_CONTAINER_ID).text());
+}
+
+// Automatic Text Color Functions
+
+var PRIMARY_TEXT_COLOR = "rgb(0, 0, 0)";
+var SECONDARY_TEXT_COLOR = "rgb(255, 255, 255)";
+
+var COLOR_DIFFERENCE_THRESHOLD = 500;
+var BRIGHTNESS_DIFFERENCE_THRESHOLD = 125;
+
+function getBestTextColor() {
+
+  var backgroundCssColor = $("#" + LYRICS_DIALOG_ID).css("background-color");
+
+  var primaryColorWcag1 = calculateWcag1(backgroundCssColor, PRIMARY_TEXT_COLOR);
+  var secondaryWcag1 = calculateWcag1(backgroundCssColor, SECONDARY_TEXT_COLOR);
+
+  if (primaryColorWcag1 >= secondaryWcag1) {
+
+    return PRIMARY_TEXT_COLOR;
+  }
+  else {
+
+    return SECONDARY_TEXT_COLOR;
+  }
+}
+
+function calculateWcag1(backgroundCssColor, textCssColor) {
+
+  var backgroundColorRgb = getColorComponentsFromCssColor(backgroundCssColor);
+  var textColorRgb = getColorComponentsFromCssColor(textCssColor);
+  
+  var brightnessDifference = calculateBrightnessDifference(backgroundColorRgb, textColorRgb);
+  var colorDifference = calculateColorDifference(backgroundColorRgb, textColorRgb);
+
+  return (colorDifference + brightnessDifference);
+}
+
+function getColorComponentsFromCssColor(cssColor) {
+
+  cssColor = cssColor.replace("rgb", "");
+  cssColor = cssColor.replace("(", "");
+  cssColor = cssColor.replace(")", "");
+  cssColor = cssColor.replace(/ /g, "");
+  
+  var colorComponents = cssColor.split(",");
+
+  return {
+    "r": colorComponents[0], 
+    "g": colorComponents[1], 
+    "b": colorComponents[2]
+  };
+}
+
+function calculateBrightnessDifference(firstColorRgb, secondColorRgb) {
+
+  var firstColorBrightness = calculateBrightness(firstColorRgb);
+  var secondColorBrightness = calculateBrightness(secondColorRgb);
+  var brightnessDifference =  Math.abs(Math.floor(secondColorBrightness - firstColorBrightness));
+
+  return brightnessDifference;
+}
+
+function calculateBrightness(colorRgb) {
+
+  var brightness = ((colorRgb["r"] * 299) + (colorRgb["g"] * 587) + (colorRgb["b"] * 114)) / 1000;
+
+  return brightness;
+}
+
+function calculateColorDifference(firstColorRgb, secondColorRgb) {
+
+  var colorDifference = (Math.max(firstColorRgb["r"], secondColorRgb["r"]) - Math.min(firstColorRgb["r"], secondColorRgb["r"])) +
+                        (Math.max(firstColorRgb["g"], secondColorRgb["g"]) - Math.min(firstColorRgb["g"], secondColorRgb["g"])) +
+                        (Math.max(firstColorRgb["b"], secondColorRgb["b"]) - Math.min(firstColorRgb["b"], secondColorRgb["b"]));
+  colorDifference = Math.floor(colorDifference);
+
+  return colorDifference;
 }
 
