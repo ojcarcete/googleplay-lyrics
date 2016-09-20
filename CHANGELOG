@@ -1,3 +1,8 @@
+Version 1.2.0:
+* Automatic lyrics text color to integrate with third party themes.
+* Fixed lyrics not being loaded correctly in some cases.
+* Added help tooltip to indicate where to find the lyrics button (only once per installation).
+
 Version 1.1.0:
 * Changed UI integration.
 * Updated artwork.
