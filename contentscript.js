@@ -44,19 +44,47 @@ var LYRICS_HEADER_CLASS = "lyrics-header";
 var LYRICS_CONTAINER_ID = "lyrics";
 
 // Other variables
+var tutorialShown = false;
 var songName = null;
 var artistName = null;
-var firstLyricsLoaded = false;
 var lyricsContainerOffset = 0;
 var lastFetchedLyrics = "No lyrics to show yet";
 
 // Start fetching
+
 $(document).ready(function() {
 
-  configureLyricsHtmlIfNeeded();
-  configureSongsQueueDialogButton();
-  startFetchingLyrics();
+  getTutorialShownSetting(function() {
+
+    configureLyricsHtmlIfNeeded();
+    configureSongsQueueDialogButton();
+    startFetchingLyrics();
+  });
 });
+
+// User Settings
+
+function getTutorialShownSetting(callback) {
+
+  chrome.storage.sync.get({
+    tutorialShown: false
+  }, 
+  function(e) {
+
+    tutorialShown = e.tutorialShown;
+    callback();
+  });
+}
+
+function setTutorialShownSetting() {
+
+  tutorialShown = true;
+
+  chrome.storage.sync.set({
+    tutorialShown: true
+  }, 
+  function() {});
+}
 
 // Lyrics Functions
 
@@ -105,11 +133,7 @@ function getLyrics() {
 
         repositionLyricsDialog();
 
-        if (!firstLyricsLoaded) {
-
-          firstLyricsLoaded = true;
-          showLyricsButtonTooltip();
-        }
+        showLyricsButtonTooltipIfNeeded();
       });
 
     return;
@@ -147,14 +171,19 @@ function addLyricsContainerIfNeeded() {
 
   var LYRICS_HEADER_HTML = "<h2 id=\"" + SECTION_HEADER_ID + "\" class=\"" + LYRICS_HEADER_CLASS + "\">Lyrics</h2>";
   var LYRICS_CONTAINER_HTML = "<div id=\"" + LYRICS_CONTAINER_ID + "\"><p>" + lastFetchedLyrics + "</p></div>";
-  var LYRICS_DIALOG_HTML = "<paper-dialog onclick=\""+ LYRICS_DIALOG_ID + ".refit()\" id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
+  var LYRICS_DIALOG_HTML = "<paper-dialog onclick=\"" + LYRICS_DIALOG_ID + ".refit()\" id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
 
   $("#" + LYRICS_DIALOG_CONTAINER_ID).append(LYRICS_DIALOG_HTML);
 
   configureTextColor();
 }
 
-function showLyricsButtonTooltip() {
+function showLyricsButtonTooltipIfNeeded() {
+
+  if (tutorialShown) {
+
+    return;
+  }
 
   $("#" + LYRICS_TOOLTIP_ANCHOR_ID).darkTooltip({
     trigger: "click",
@@ -164,6 +193,8 @@ function showLyricsButtonTooltip() {
   });
 
   $("#" + LYRICS_TOOLTIP_ANCHOR_ID).click();
+
+  setTutorialShownSetting();
 }
 
 function removeLyricsButtonTooltip() {
@@ -196,14 +227,11 @@ function lyricsButtonPressed() {
   if (!lyricsDialogExists()) {
 
     recoverFromMissingLyricsDialog();
-  } 
-  else if (isOpeningLyricsDialog()) {
+  } else if (isOpeningLyricsDialog()) {
 
     closeSongsQueueDialog();
 
     removeLyricsButtonTooltip();
-    
-    firstLyricsLoaded = true;
   }
 }
 
@@ -291,8 +319,7 @@ function getBestTextColor() {
   if (primaryColorWcag1 >= secondaryWcag1) {
 
     return PRIMARY_TEXT_COLOR;
-  }
-  else {
+  } else {
 
     return SECONDARY_TEXT_COLOR;
   }
@@ -302,7 +329,7 @@ function calculateWcag1(backgroundCssColor, textCssColor) {
 
   var backgroundColorRgb = getColorComponentsFromCssColor(backgroundCssColor);
   var textColorRgb = getColorComponentsFromCssColor(textCssColor);
-  
+
   var brightnessDifference = calculateBrightnessDifference(backgroundColorRgb, textColorRgb);
   var colorDifference = calculateColorDifference(backgroundColorRgb, textColorRgb);
 
@@ -315,12 +342,12 @@ function getColorComponentsFromCssColor(cssColor) {
   cssColor = cssColor.replace("(", "");
   cssColor = cssColor.replace(")", "");
   cssColor = cssColor.replace(/ /g, "");
-  
+
   var colorComponents = cssColor.split(",");
 
   return {
-    "r": colorComponents[0], 
-    "g": colorComponents[1], 
+    "r": colorComponents[0],
+    "g": colorComponents[1],
     "b": colorComponents[2]
   };
 }
@@ -329,7 +356,7 @@ function calculateBrightnessDifference(firstColorRgb, secondColorRgb) {
 
   var firstColorBrightness = calculateBrightness(firstColorRgb);
   var secondColorBrightness = calculateBrightness(secondColorRgb);
-  var brightnessDifference =  Math.abs(Math.floor(secondColorBrightness - firstColorBrightness));
+  var brightnessDifference = Math.abs(Math.floor(secondColorBrightness - firstColorBrightness));
 
   return brightnessDifference;
 }
@@ -344,10 +371,9 @@ function calculateBrightness(colorRgb) {
 function calculateColorDifference(firstColorRgb, secondColorRgb) {
 
   var colorDifference = (Math.max(firstColorRgb["r"], secondColorRgb["r"]) - Math.min(firstColorRgb["r"], secondColorRgb["r"])) +
-                        (Math.max(firstColorRgb["g"], secondColorRgb["g"]) - Math.min(firstColorRgb["g"], secondColorRgb["g"])) +
-                        (Math.max(firstColorRgb["b"], secondColorRgb["b"]) - Math.min(firstColorRgb["b"], secondColorRgb["b"]));
+    (Math.max(firstColorRgb["g"], secondColorRgb["g"]) - Math.min(firstColorRgb["g"], secondColorRgb["g"])) +
+    (Math.max(firstColorRgb["b"], secondColorRgb["b"]) - Math.min(firstColorRgb["b"], secondColorRgb["b"]));
   colorDifference = Math.floor(colorDifference);
 
   return colorDifference;
 }
-

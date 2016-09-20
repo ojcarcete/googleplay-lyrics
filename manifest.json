@@ -20,7 +20,8 @@
   }],
   "description": "Displays lyrics for the current song in Google Play (TM) Music",
   "permissions": [
-     "*://play.google.com/music/listen*", 
-     "http://lyrics.wikia.com/*"
+    "storage",
+    "*://play.google.com/music/listen*", 
+    "http://lyrics.wikia.com/*"
   ]
 }
