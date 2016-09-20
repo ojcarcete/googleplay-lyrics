@@ -15,8 +15,8 @@
   },
   "content_scripts": [{
       "matches": ["*://play.google.com/music/listen*"],
-      "css": ["contentscript-theme.css"],
-      "js": ["libs/js/jquery.min.js", "contentscript.js"]
+      "css": ["libs/css/darktooltip.css", "contentscript-theme.css"],
+      "js": ["libs/js/jquery.min.js", "libs/js/jquery.darktooltip.js", "contentscript.js"]
   }],
   "description": "Displays lyrics for the current song in Google Play (TM) Music",
   "permissions": [

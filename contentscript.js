@@ -35,6 +35,9 @@ var SONGS_QUEUE_DIALOG_ID = "queue-overlay";
 var LYRICS_BUTTON_ID = "lyrics-button";
 var LYRICS_BUTTON_ICON = "av:library-books";
 
+var LYRICS_TOOLTIP_ANCHOR_ID = "lyrics-tooltip";
+var LYRICS_TOOLTIP_ID = "darktooltip-" + LYRICS_TOOLTIP_ANCHOR_ID;
+
 var LYRICS_DIALOG_CONTAINER_ID = "mainContainer";
 var LYRICS_DIALOG_ID = "scrolling";
 var LYRICS_HEADER_CLASS = "lyrics-header";
@@ -105,7 +108,7 @@ function getLyrics() {
         if (!firstLyricsLoaded) {
 
           firstLyricsLoaded = true;
-          openLyricsDialog();
+          showLyricsButtonTooltip();
         }
       });
 
@@ -128,7 +131,7 @@ function addLyricsButtonIfNeeded() {
     return;
   }
 
-  var LYRICS_BUTTON_HTML = "<paper-icon-button id=\"" + LYRICS_BUTTON_ID + "\" icon=\"" + LYRICS_BUTTON_ICON + "\" onclick=\"" + LYRICS_DIALOG_ID + ".toggle()\"></paper-icon-button>";
+  var LYRICS_BUTTON_HTML = "<span id=\"" + LYRICS_TOOLTIP_ANCHOR_ID + "\"><paper-icon-button id=\"" + LYRICS_BUTTON_ID + "\" icon=\"" + LYRICS_BUTTON_ICON + "\" onclick=\"" + LYRICS_DIALOG_ID + ".toggle()\"></paper-icon-button></span>";
 
   $("#" + PLAYLISTS_DRAWER_BUTTON_ID).before(LYRICS_BUTTON_HTML);
 
@@ -151,11 +154,21 @@ function addLyricsContainerIfNeeded() {
   configureTextColor();
 }
 
-function configureTextColor() {
+function showLyricsButtonTooltip() {
 
-  var bestTextColor = getBestTextColor();
-  $("#" + LYRICS_DIALOG_CONTAINER_ID + " p").css("color", bestTextColor);
-  $("#" + LYRICS_DIALOG_CONTAINER_ID + " div").css("color", bestTextColor);
+  $("#" + LYRICS_TOOLTIP_ANCHOR_ID).darkTooltip({
+    trigger: "click",
+    gravity: "north",
+    content: "Click here to show the lyrics!",
+    modal: true
+  });
+
+  $("#" + LYRICS_TOOLTIP_ANCHOR_ID).click();
+}
+
+function removeLyricsButtonTooltip() {
+
+  $("#" + LYRICS_TOOLTIP_ID).remove();
 }
 
 function recoverFromMissingLyricsDialog() {
@@ -187,6 +200,10 @@ function lyricsButtonPressed() {
   else if (isOpeningLyricsDialog()) {
 
     closeSongsQueueDialog();
+
+    removeLyricsButtonTooltip();
+    
+    firstLyricsLoaded = true;
   }
 }
 
@@ -256,6 +273,13 @@ var SECONDARY_TEXT_COLOR = "rgb(255, 255, 255)";
 
 var COLOR_DIFFERENCE_THRESHOLD = 500;
 var BRIGHTNESS_DIFFERENCE_THRESHOLD = 125;
+
+function configureTextColor() {
+
+  var bestTextColor = getBestTextColor();
+  $("#" + LYRICS_DIALOG_CONTAINER_ID + " p").css("color", bestTextColor);
+  $("#" + LYRICS_DIALOG_CONTAINER_ID + " div").css("color", bestTextColor);
+}
 
 function getBestTextColor() {
 
