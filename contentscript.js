@@ -171,9 +171,10 @@ function addLyricsContainerIfNeeded() {
 
   var LYRICS_HEADER_HTML = "<h2 id=\"" + SECTION_HEADER_ID + "\" class=\"" + LYRICS_HEADER_CLASS + "\">Lyrics</h2>";
   var LYRICS_CONTAINER_HTML = "<div id=\"" + LYRICS_CONTAINER_ID + "\"><p>" + lastFetchedLyrics + "</p></div>";
-  var LYRICS_DIALOG_HTML = "<paper-dialog onclick=\"" + LYRICS_DIALOG_ID + ".refit()\" id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
+  var LYRICS_DIALOG_HTML = "<paper-dialog id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
 
   $("#" + LYRICS_DIALOG_CONTAINER_ID).append(LYRICS_DIALOG_HTML);
+  $("#" + LYRICS_DIALOG_ID).click(repositionLyricsDialog);
 
   configureTextColor();
 }
@@ -210,7 +211,7 @@ function recoverFromMissingLyricsDialog() {
 
 function repositionLyricsDialog() {
 
-  $("#" + LYRICS_DIALOG_ID).click(); // triggers refit() call configured in dialog's HTML
+  window.dispatchEvent(new Event("resize")); // forces lyrics container paper-dialog to resize
 }
 
 // Google Play HTML Configuration Functions
