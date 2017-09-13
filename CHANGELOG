@@ -1,3 +1,6 @@
+Version 1.2.1:
+* Fixed lyrics not loading.
+
 Version 1.2.0:
 * Automatic lyrics text color to integrate with third party themes.
 * Fixed lyrics not being loaded correctly in some cases.
