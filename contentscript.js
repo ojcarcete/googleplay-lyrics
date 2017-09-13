@@ -56,9 +56,12 @@ $(document).ready(function() {
 
   getTutorialShownSetting(function() {
 
-    configureLyricsHtmlIfNeeded();
-    configureSongsQueueDialogButton();
-    startFetchingLyrics();
+    setTimeout(function() {
+
+      configureLyricsHtmlIfNeeded();
+      configureSongsQueueDialogButton();
+      startFetchingLyrics();
+    }, 5000); // Delayed to avoid issues due to missing "LYRICS_DIALOG_CONTAINER"
   });
 });
 
