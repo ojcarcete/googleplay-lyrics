@@ -158,10 +158,11 @@ function addLyricsButtonIfNeeded() {
     return;
   }
 
-  var LYRICS_BUTTON_HTML = "<span id=\"" + LYRICS_TOOLTIP_ANCHOR_ID + "\"><paper-icon-button id=\"" + LYRICS_BUTTON_ID + "\" icon=\"" + LYRICS_BUTTON_ICON + "\" onclick=\"" + LYRICS_DIALOG_ID + ".toggle()\"></paper-icon-button></span>";
+  var LYRICS_BUTTON_HTML = "<span id=\"" + LYRICS_TOOLTIP_ANCHOR_ID + "\"><paper-icon-button id=\"" + LYRICS_BUTTON_ID + "\" icon=\"" + LYRICS_BUTTON_ICON + "\"></paper-icon-button></span>";
 
   $("#" + PLAYLISTS_DRAWER_BUTTON_ID).before(LYRICS_BUTTON_HTML);
 
+  $("#" + LYRICS_BUTTON_ID).click(toggleLyricsContainer);
   $("#" + LYRICS_BUTTON_ID).click(lyricsButtonPressed);
 }
 
@@ -174,7 +175,7 @@ function addLyricsContainerIfNeeded() {
 
   var LYRICS_HEADER_HTML = "<h2 id=\"" + SECTION_HEADER_ID + "\" class=\"" + LYRICS_HEADER_CLASS + "\">Lyrics</h2>";
   var LYRICS_CONTAINER_HTML = "<div id=\"" + LYRICS_CONTAINER_ID + "\"><p>" + lastFetchedLyrics + "</p></div>";
-  var LYRICS_DIALOG_HTML = "<paper-dialog id=\"" + LYRICS_DIALOG_ID + "\" horizontal-align=\"right\" vertical-align=\"bottom\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
+  var LYRICS_DIALOG_HTML = "<paper-dialog id=\"" + LYRICS_DIALOG_ID + "\" no-cancel-on-outside-click>" + LYRICS_HEADER_HTML + "<paper-dialog-scrollable>" + LYRICS_CONTAINER_HTML + "</paper-dialog-scrollable></paper-dialog>";
 
   $("#" + LYRICS_DIALOG_CONTAINER_ID).append(LYRICS_DIALOG_HTML);
   $("#" + LYRICS_DIALOG_ID).click(repositionLyricsDialog);
@@ -204,6 +205,11 @@ function showLyricsButtonTooltipIfNeeded() {
 function removeLyricsButtonTooltip() {
 
   $("#" + LYRICS_TOOLTIP_ID).remove();
+}
+
+function toggleLyricsContainer() {
+
+  $("#" + LYRICS_DIALOG_ID).toggle();
 }
 
 function recoverFromMissingLyricsDialog() {

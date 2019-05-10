@@ -1,13 +1,9 @@
-// Return Message Function ptr
-var sendLyrics;
-var lyrics;
+var sendLyrics; // Return Message Function ptr
 var sourceUrl;
-var status;
-var errorString;
 
 function loadLyrics(htmlResponse) {
-
-  lyrics = $(htmlResponse).find('div[class="lyricbox"]').html();
+  var sanitizedHtmlResponse = html_sanitize(htmlResponse, sanUrl, sanId);
+  var lyrics = $(sanitizedHtmlResponse).find('div[class="lyricbox"]').html();
   sendLyrics({
     "status": "success",
     "lyrics": lyrics,
@@ -22,6 +18,7 @@ function getLyricsLink(xmlResponse) {
   sourceUrl = url[0].textContent;
 
   try {
+
     sourceUrl = decodeURIComponent(escape(decodeURI(sourceUrl)));
   } catch (error) {
 
@@ -48,9 +45,8 @@ function getLyricsLink(xmlResponse) {
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
-  // Using lyrics.wikia.com REST api.
   $.ajax({
-    url: "http://lyrics.wikia.com/api.php",
+    url: "http://lyrics.fandom.com/api.php",
     data: {
       artist: request.artist,
       song: request.song,
@@ -70,3 +66,14 @@ $(document).ajaxError(function() {
     "lyrics": "Network Error"
   });
 });
+
+// Html sanitizer
+function sanId(id) {
+  
+  return id;
+}
+
+function sanUrl(url) {
+
+  return url;
+}

@@ -1,15 +1,11 @@
 
 #scrolling {
-    left: initial !important;
+    position: fixed;
+    top: 16px !important;
+    bottom: 16px !important;
     right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
     width: 300px !important;
-    max-width: 300px !important;
-}
-
-#scrolling paper-dialog-scrollable {
-    margin-top: 0;
+    overflow: auto;
 }
 
 .lyrics-header {
